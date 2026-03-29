@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Premium Experience</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <style>
+        :root {
+            --bg-color: #030303;
+            --text-primary: #ffffff;
+            --text-secondary: #888888;
+            --glass-bg: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --glass-hover-bg: rgba(255, 255, 255, 0.06);
+            --glass-hover-border: rgba(255, 255, 255, 0.2);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            overflow-x: hidden;
+            background: radial-gradient(circle at 50% 50%, #111115 0%, #030303 100%);
+        }
+
+        /* Viewport acts as the scrollable space */
+        .viewport {
+            width: 100vw;
+            height: 300vh;
+        }
+
+        /* Hero Section setup */
+        .hero {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            overflow: hidden;
+            background-image: linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+                              linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+            background-size: 50px 50px;
+        }
+
+        /* Headline Styling */
+        .headline-container {
+            position: absolute;
+            left: 8vw;
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        .headline {
+            font-size: min(10vw, 8rem);
+            font-weight: 300;
+            letter-spacing: 1.5vw;
+            text-transform: uppercase;
+            display: flex;
+            flex-direction: column;
+            gap: 1vh;
+            mix-blend-mode: exclusion;
+        }
+
+        .word {
+            display: flex;
+        }
+
+        .char {
+            display: inline-block;
+            opacity: 0;
+            transform: translateY(100px);
+            will-change: transform, opacity;
+        }
+
+        /* Car Image Styling */
+        .car-wrapper {
+            position: absolute;
+            right: -5vw;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 65vw;
+            max-width: 1200px;
+            z-index: 1;
+            mix-blend-mode: screen; 
+            opacity: 0; 
+        }
+
+        .car-wrapper img {
+            width: 100%;
+            height: auto;
+            object-fit: contain;
+            filter: drop-shadow(0px 20px 40px rgba(0,0,0,0.8));
+            will-change: transform;
+        }
+
+        /* Stat Cards */
+        .stats-container {
+            position: absolute;
+            bottom: 8vh;
+            left: 8vw;
+            display: flex;
+            gap: 2rem;
+            z-index: 10;
+        }
+
+        .stat-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 2rem;
+            width: 280px;
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            will-change: transform, box-shadow;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Soft glow effect inside card on hover */
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: radial-gradient(circle at top left, rgba(255,255,255,0.1) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-8px);
+            background: var(--glass-hover-bg);
+            border-color: var(--glass-hover-border);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.7), 0 0 40px rgba(255,255,255,0.05);
+        }
+
+        .stat-card:hover::before {
+            opacity: 1;
+        }
+
+        .stat-value {
+            font-size: 3.5rem;
+            font-weight: 600;
+            background: linear-gradient(135deg, #ffffff 0%, #777777 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+            font-weight: 400;
+        }
+
+        /* Mobile Adjustments */
+        @media (max-width: 1024px) {
+            .hero {
+                align-items: flex-start;
+                padding-top: 15vh;
+            }
+            .headline-container {
+                left: 5vw;
+                top: 5vh;
+            }
+            .headline {
+                font-size: 15vw;
+                letter-spacing: 1.5vw;
+            }
+            .car-wrapper {
+                width: 90vw;
+                right: 5vw;
+                top: 40%;
+            }
+            .stats-container {
+                bottom: 5vh;
+                left: 5vw;
+                flex-direction: column;
+                gap: 1rem;
+            }
+            .stat-card {
+                width: 90vw;
+                max-width: 400px;
+                padding: 1.5rem;
+            }
+            .stat-value {
+                font-size: 2.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="viewport">
+    <section class="hero" id="hero">
+        
+        <div class="headline-container">
+            <h1 class="headline" id="headline">
+                <div class="word">
+                    <span class="char">W</span>
+                    <span class="char">E</span>
+                    <span class="char">L</span>
+                    <span class="char">C</span>
+                    <span class="char">O</span>
+                    <span class="char">M</span>
+                    <span class="char">E</span>
+                </div>
+                <div class="word">
+                    <span class="char">I</span>
+                    <span class="char">T</span>
+                    <span class="char">S</span>
+                    <span class="char">Z</span>
+                    <span class="char">F</span>
+                    <span class="char">I</span>
+                    <span class="char">Z</span>
+                    <span class="char">Z</span>
+                </div>
+            </h1>
+        </div>
+
+        <div class="car-wrapper" id="car-wrapper">
+            <img src="car.png" alt="Premium Top View Car" id="car-img">
+        </div>
+
+        <div class="stats-container">
+            <div class="stat-card stat-1">
+                <span class="stat-value">58%</span>
+                <p class="stat-label">Increase in pickup usage through intelligent system routing.</p>
+            </div>
+            <div class="stat-card stat-2">
+                <span class="stat-value">27%</span>
+                <p class="stat-label">Increase in overall operational efficiency and speed.</p>
+            </div>
+            <div class="stat-card stat-3">
+                <span class="stat-value">23%</span>
+                <p class="stat-label">Reduction in support calls via proactive logging.</p>
+            </div>
+        </div>
+        
+    </section>
+</div>
+
+<script>
+    gsap.registerPlugin(ScrollTrigger);
+
+    function initAnimations() {
+        const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
+
+        // 1. Initial Load Animations
+        tl.to(".char", {
+            y: 0,
+            opacity: 1,
+            duration: 1.2,
+            stagger: 0.1
+        })
+        .to(".car-wrapper", {
+            x: -30,
+            opacity: 1,
+            duration: 1.8,
+            ease: "power2.out"
+        }, "-=1.0")
+        .to(".stat-card", {
+            y: 0,
+            opacity: 1,
+            duration: 1.2,
+            stagger: 0.15,
+            clearProps: "transform" // Clears transform allowing CSS hover to work seamlessly
+        }, "-=1.4");
+
+        // 2. Scroll-Based Animations
+        ScrollTrigger.create({
+            trigger: "#hero",
+            start: "top top",
+            end: "+=2000",
+            pin: true,
+            anticipatePin: 1
+        });
+
+        const scrollTl = gsap.timeline({
+            scrollTrigger: {
+                trigger: ".viewport",
+                start: "top top",
+                end: "bottom bottom",
+                scrub: 1.5
+            }
+        });
+
+        scrollTl.to(".car-wrapper", {
+            x: "-60vw", 
+            scale: 1.15,
+            ease: "none"
+        }, 0);
+
+        scrollTl.to(".headline", {
+            x: "-10vw",
+            opacity: 0,
+            ease: "none"
+        }, 0);
+
+        scrollTl.to(".stats-container", {
+            y: "-80px",
+            opacity: 0,
+            ease: "none"
+        }, 0);
+    }
+
+    document.addEventListener("DOMContentLoaded", initAnimations);
+</script>
+</body>
+</html>
